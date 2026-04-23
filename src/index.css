@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Nothing+You+Could+Do&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Instrument Serif", serif;
+  --font-script: "Nothing You Could Do", cursive;
+  
+  /* Grihon Earthy Palette from Image */
+  --color-grihon-bg: #FDF9F3;        /* Very light cream/beige */
+  --color-grihon-ink: #3D2B1F;       /* Deep chocolate/charcoal */
+  --color-grihon-earth: #B87333;     /* Terracotta/Copper */
+  --color-grihon-clay: #8B5E3C;      /* Warm brown */
+  --color-grihon-peach: #F4E5D4;     /* Soft peach/tan */
+  --color-grihon-accent: #E8D3B9;    /* Sand */
+}
+
+@layer base {
+  body {
+    @apply bg-grihon-bg text-grihon-ink font-sans antialiased;
+  }
+
+  h1, h2, h3 {
+    @apply font-display font-normal;
+  }
+}
+
+.grihon-container {
+  @apply max-w-7xl mx-auto px-6 lg:px-12;
+}
+
+.grihon-button {
+  @apply inline-flex items-center justify-center px-8 py-3 bg-grihon-clay text-white rounded-full font-medium transition-all hover:opacity-90 active:scale-95 disabled:opacity-50;
+}
+
+.grihon-button-outline {
+  @apply inline-flex items-center justify-center px-8 py-3 border border-grihon-accent text-grihon-ink rounded-full font-medium transition-all hover:bg-grihon-accent/10;
+}
+
+.category-card {
+  @apply flex flex-col items-center text-center cursor-pointer;
+}
+
+.category-image-wrapper {
+  @apply w-full aspect-square bg-[#F5F5F5] rounded-xl overflow-hidden mb-4 border border-grihon-accent/20 transition-all;
+}
+
+.leaf-decoration {
+  @apply absolute pointer-events-none opacity-20 group-hover:opacity-30 transition-opacity;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-grihon-bg;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-grihon-clay/30 rounded-full;
+}
