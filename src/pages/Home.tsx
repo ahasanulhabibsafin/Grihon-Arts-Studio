@@ -30,10 +30,16 @@ export default function Home({ graphics, onNavigate, onDesignSelect }: { graphic
               Curated craft, digital assets and creative inspiration for home and illustrations. Find your unique style here.
             </p>
             <div className="flex flex-wrap gap-4">
-              <button className="grihon-button bg-grihon-earth shadow-lg px-10 h-14">
+              <button 
+                onClick={() => onNavigate('archive')}
+                className="grihon-button bg-grihon-earth shadow-lg px-10 h-14"
+              >
                 Explore Collection
               </button>
-              <button className="text-grihon-ink font-bold border-b border-grihon-ink pb-1 h-14 px-4 hover:opacity-70 transition-opacity">
+              <button 
+                onClick={() => onNavigate('manuals')}
+                className="text-grihon-ink font-bold border-b border-grihon-ink pb-1 h-14 px-4 hover:opacity-70 transition-opacity"
+              >
                 Download Free Manuals
               </button>
             </div>
@@ -76,21 +82,62 @@ export default function Home({ graphics, onNavigate, onDesignSelect }: { graphic
         </div>
       </section>
 
-      {/* Categories Section */}
-      <section className="grihon-container py-24">
-        <h2 className="text-sm font-bold tracking-[0.3em] uppercase text-center text-grihon-accent mb-16">Categories</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-20">
-          {[
-            { title: 'Posters', subtitle: 'Posters', view: 'Posters', img: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&q=80&w=600' },
-            { title: 'Social Media', subtitle: 'Designs', view: 'Social Media', img: 'https://images.unsplash.com/photo-1614850523296-e8c1d4704a96?auto=format&fit=crop&q=80&w=600' },
-            { title: 'Illustrations', subtitle: 'Typography', view: 'Illustrations', img: 'https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?auto=format&fit=crop&q=80&w=600' }
-          ].map((cat) => (
-            <div key={cat.title} className="category-card group" onClick={() => onNavigate(cat.view)}>
-              <div className="category-image-wrapper group-hover:shadow-lg">
-                <img src={cat.img} alt={cat.title} className="w-full h-full object-cover" />
+      {/* Trending Designs - Studio Signature */}
+      <section className="grihon-container py-24 border-t border-grihon-accent/10">
+        <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+          <div>
+            <span className="text-xs font-bold tracking-[0.3em] uppercase text-grihon-clay mb-4 block">Trending Designs</span>
+            <h2 className="text-6xl font-display leading-none">Studio Signature</h2>
+          </div>
+          <button 
+            onClick={() => onNavigate('archive')}
+            className="text-sm font-bold tracking-widest uppercase border-b-2 border-grihon-earth pb-1 hover:opacity-70 transition-opacity"
+          >
+            Check All Archives
+          </button>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+          {trendingGraphics.map((graphic) => (
+            <GraphicCard 
+              key={graphic.id} 
+              graphic={graphic} 
+              onPromptSelect={() => onDesignSelect(graphic.id)}
+            />
+          ))}
+        </div>
+      </section>
+
+      {/* New Uploads Section */}
+      <section className="grihon-container py-24 border-t border-grihon-accent/10">
+        <div className="flex items-center gap-4 mb-16">
+          <div className="h-px bg-grihon-earth flex-grow opacity-20" />
+          <div className="text-center px-8">
+            <span className="text-[10px] font-bold tracking-[0.4em] uppercase text-grihon-clay mb-2 block">Fresh in Studio</span>
+            <h2 className="text-5xl font-display">New Uploads</h2>
+          </div>
+          <div className="h-px bg-grihon-earth flex-grow opacity-20" />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {graphics.slice(0, 4).map((graphic) => (
+            <div key={graphic.id} className="relative group cursor-pointer" onClick={() => onDesignSelect(graphic.id)}>
+              <div className="aspect-[3/4] overflow-hidden rounded-3xl bg-grihon-accent/5">
+                <img 
+                  src={graphic.previewUrl} 
+                  alt={graphic.title} 
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-grihon-ink/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
+                   <div className="bg-white/90 backdrop-blur px-4 py-2 rounded-full text-[10px] font-bold tracking-widest uppercase">
+                     View Details
+                   </div>
+                </div>
               </div>
-              <h3 className="text-3xl mb-1">{cat.title}</h3>
-              <p className="text-grihon-clay font-bold text-xs uppercase tracking-widest">{cat.subtitle}</p>
+              <div className="mt-4">
+                <h4 className="font-display text-lg mb-1">{graphic.title}</h4>
+                <p className="text-xs text-gray-400 uppercase tracking-widest">{graphic.category}</p>
+              </div>
             </div>
           ))}
         </div>
@@ -183,7 +230,10 @@ export default function Home({ graphics, onNavigate, onDesignSelect }: { graphic
             </div>
             <div className="flex flex-col items-center gap-6">
                <p className="text-lg font-display">Start creating with Grihon</p>
-               <button className="bg-[#E8D3B9] text-grihon-ink px-12 py-4 rounded-full font-bold text-sm tracking-widest uppercase shadow-xl hover:scale-105 transition-transform">
+               <button 
+                onClick={() => onNavigate('archive')}
+                className="bg-[#E8D3B9] text-grihon-ink px-12 py-4 rounded-full font-bold text-sm tracking-widest uppercase shadow-xl hover:scale-105 transition-transform"
+               >
                  Browse All Graphics
                </button>
             </div>

@@ -7,9 +7,10 @@ import Home from './pages/Home';
 import Admin from './pages/Admin';
 import Category from './pages/Category';
 import ProductModal from './components/ProductModal';
+import Manuals from './pages/Manuals';
 
 export default function App() {
-  const [view, setView] = React.useState<'home' | 'admin' | 'Posters' | 'Social Media' | 'Illustrations'>('home');
+  const [view, setView] = React.useState<'home' | 'admin' | 'archive' | 'manuals' | 'Posters' | 'Social Media' | 'Illustrations'>('home');
   const [selectedDesignId, setSelectedDesignId] = React.useState<string | null>(null);
   const [graphics, setGraphics] = React.useState<any[]>([]);
   const [user, setUser] = React.useState<FirebaseUser | null>(null);
@@ -99,6 +100,8 @@ export default function App() {
   const renderView = () => {
     if (view === 'home') return <Home graphics={graphics} onNavigate={(v: any) => setView(v)} onDesignSelect={setSelectedDesignId} />;
     if (view === 'admin') return <Admin user={user} graphics={graphics} onAdd={handleAddGraphic} onDelete={handleDeleteGraphic} />;
+    if (view === 'archive') return <Category title="Archive" graphics={graphics} onDesignSelect={setSelectedDesignId} />;
+    if (view === 'manuals') return <Manuals />;
     
     const categoryGraphics = graphics.filter(g => g.category === view);
     return <Category title={view} graphics={categoryGraphics} onDesignSelect={setSelectedDesignId} />;
