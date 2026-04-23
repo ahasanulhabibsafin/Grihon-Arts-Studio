@@ -3,7 +3,7 @@ import { motion } from 'motion/react';
 import { Plus, Trash2, ExternalLink, Image as ImageIcon, Link as LinkIcon, DollarSign, Type, FileText } from 'lucide-react';
 import { formatDownloadUrl } from '../lib/utils';
 
-export default function Admin({ user, graphics, onAdd, onDelete }: { user: any, graphics: any[], onAdd: (g: any) => void, onDelete: (id: string) => void }) {
+export default function Admin({ graphics, onAdd, onDelete }: { graphics: any[], onAdd: (g: any) => void, onDelete: (id: string) => void }) {
   const [formData, setFormData] = React.useState({
     title: '',
     description: '',
@@ -12,8 +12,6 @@ export default function Admin({ user, graphics, onAdd, onDelete }: { user: any, 
     downloadUrl: '',
     price: 0,
   });
-
-  const isAdmin = user?.email === 'safinbakshi013@gmail.com';
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,20 +29,11 @@ export default function Admin({ user, graphics, onAdd, onDelete }: { user: any, 
     });
   };
 
-  if (!isAdmin) {
-    return (
-      <div className="pt-40 grihon-container min-h-screen text-center">
-        <h1 className="text-6xl font-display mb-4">Access Denied</h1>
-        <p className="text-gray-500 uppercase tracking-widest text-xs">This sanctuary is for Grihon studio admins only.</p>
-      </div>
-    );
-  }
-
   return (
     <div className="pt-32 grihon-container min-h-screen pb-20">
       <div className="mb-16">
         <h1 className="text-7xl font-display leading-[0.8] mb-4">Studio Archive</h1>
-        <p className="text-grihon-earth font-medium tracking-widest text-sm uppercase">Curate Your Digital Sanctuary</p>
+        <p className="text-grihon-earth font-medium tracking-widest text-sm uppercase">Curate Your Digital Sanctuary (Local Session)</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">

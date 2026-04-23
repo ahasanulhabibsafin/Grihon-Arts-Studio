@@ -1,16 +1,12 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Menu, X, ShoppingBag, User, LogOut, Search, Heart } from 'lucide-react';
-import { User as FirebaseUser } from 'firebase/auth';
+import { Menu, X, ShoppingBag, User, Search, Heart } from 'lucide-react';
 
-export default function Navbar({ user, onLogin, onLogout, onAdminClick, onHomeClick, onNavigate, activeView }: { 
-  user: FirebaseUser | null, 
-  onLogin: () => void,
-  onLogout: () => void,
+export default function Navbar({ onAdminClick, onHomeClick, onNavigate, currentView }: { 
   onAdminClick: () => void, 
   onHomeClick: () => void,
   onNavigate: (view: any) => void,
-  activeView: string
+  currentView: string
 }) {
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -18,6 +14,7 @@ export default function Navbar({ user, onLogin, onLogout, onAdminClick, onHomeCl
     { name: 'Posters', view: 'Posters' },
     { name: 'Social Media', view: 'Social Media' },
     { name: 'Illustrations', view: 'Illustrations' },
+    { name: 'Manuals', view: 'manuals' },
   ];
 
   return (
@@ -36,7 +33,7 @@ export default function Navbar({ user, onLogin, onLogout, onAdminClick, onHomeCl
                 key={item.name} 
                 onClick={() => onNavigate(item.view)}
                 className={`text-sm font-medium transition-colors ${
-                  activeView === item.view ? 'text-grihon-earth' : 'hover:text-grihon-earth'
+                  currentView === item.view ? 'text-grihon-earth' : 'hover:text-grihon-earth'
                 }`}
               >
                 {item.name}
@@ -59,26 +56,13 @@ export default function Navbar({ user, onLogin, onLogout, onAdminClick, onHomeCl
               <ShoppingBag size={20} />
             </button>
             
-            {user ? (
-              <div className="flex items-center gap-2 border-l border-grihon-accent/30 pl-3 ml-2">
-                <button 
-                  onClick={onAdminClick} 
-                  className={activeView === 'admin' ? "bg-grihon-earth text-white rounded-full p-2" : "p-2 hover:bg-grihon-accent/20 rounded-full text-grihon-ink"}
-                >
-                  <User size={20} />
-                </button>
-                <button onClick={onLogout} className="p-2 hover:bg-grihon-accent/20 rounded-full transition-colors text-gray-400">
-                  <LogOut size={16} />
-                </button>
-              </div>
-            ) : (
-              <button 
-                onClick={onLogin}
-                className="ml-2 px-6 py-2 bg-grihon-earth text-white rounded-full text-sm font-medium hover:bg-grihon-ink transition-all"
-              >
-                Log In
-              </button>
-            )}
+            <button 
+              onClick={onAdminClick} 
+              className={`p-2 transition-all rounded-full ${currentView === 'admin' ? "bg-grihon-earth text-white" : "hover:bg-grihon-accent/20 text-grihon-ink"}`}
+              title="Studio Management"
+            >
+              <User size={20} />
+            </button>
 
             <button 
               className="md:hidden p-2 hover:bg-grihon-accent/20 rounded-full"
@@ -99,10 +83,17 @@ export default function Navbar({ user, onLogin, onLogout, onAdminClick, onHomeCl
             className="absolute top-20 left-0 w-full bg-grihon-bg border-b border-grihon-accent/20 p-6 md:hidden shadow-xl"
           >
             <div className="flex flex-col gap-6">
-              {['Posters', 'Social Media', 'Illustrations'].map((item) => (
-                <a key={item} href="#" className="text-2xl font-display">
-                  {item}
-                </a>
+              {navItems.map((item) => (
+                <button 
+                  key={item.name} 
+                  onClick={() => {
+                    onNavigate(item.view);
+                    setIsOpen(false);
+                  }}
+                  className="text-left text-2xl font-display"
+                >
+                  {item.name}
+                </button>
               ))}
               <div className="flex items-center bg-white border border-grihon-accent/40 rounded-full px-4 py-3">
                 <Search size={20} className="text-gray-400" />

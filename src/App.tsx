@@ -1,20 +1,17 @@
 import React from 'react';
-import { onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut, User as FirebaseUser } from 'firebase/auth';
-import { collection, query, onSnapshot, addDoc, deleteDoc, doc, serverTimestamp, orderBy } from 'firebase/firestore';
-import { auth, db, handleFirestoreError } from './lib/firebase';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Admin from './pages/Admin';
 import Category from './pages/Category';
 import ProductModal from './components/ProductModal';
 import Manuals from './pages/Manuals';
+import { INITIAL_GRAPHICS, Graphic } from './data/graphics';
 
 export default function App() {
   const [view, setView] = React.useState<'home' | 'admin' | 'archive' | 'manuals' | 'Posters' | 'Social Media' | 'Illustrations'>('home');
   const [selectedDesignId, setSelectedDesignId] = React.useState<string | null>(null);
-  const [graphics, setGraphics] = React.useState<any[]>([]);
-  const [user, setUser] = React.useState<FirebaseUser | null>(null);
-  const [loading, setLoading] = React.useState(true);
+  const [graphics, setGraphics] = React.useState<Graphic[]>(INITIAL_GRAPHICS);
+  const [loading, setLoading] = React.useState(false);
 
   // Read initial ID from URL
   React.useEffect(() => {
@@ -34,59 +31,17 @@ export default function App() {
     window.history.replaceState({}, '', url);
   }, [selectedDesignId]);
 
-  // Auth Listener
-  React.useEffect(() => {
-    return onAuthStateChanged(auth, (u) => {
-      setUser(u);
-    });
-  }, []);
-
-  // Firestore Listener
-  React.useEffect(() => {
-    const q = query(collection(db, 'graphics'), orderBy('createdAt', 'desc'));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const data = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-      setGraphics(data);
-      setLoading(false);
-    }, (error) => {
-      console.error("Firestore Error:", error);
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  const handleLogin = async () => {
-    try {
-      const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
-    } catch (error) {
-      console.error("Login failed", error);
-    }
+  const handleAddGraphic = (newGraphic: any) => {
+    const graphic: Graphic = {
+      ...newGraphic,
+      id: Math.random().toString(36).substr(2, 9),
+      createdAt: new Date().toISOString()
+    };
+    setGraphics(prev => [graphic, ...prev]);
   };
 
-  const handleLogout = () => signOut(auth);
-
-  const handleAddGraphic = async (newGraphic: any) => {
-    try {
-      await addDoc(collection(db, 'graphics'), {
-        ...newGraphic,
-        createdAt: serverTimestamp(),
-      });
-    } catch (error) {
-      handleFirestoreError(error, 'create', 'graphics');
-    }
-  };
-
-  const handleDeleteGraphic = async (id: string) => {
-    try {
-      await deleteDoc(doc(db, 'graphics', id));
-    } catch (error) {
-      handleFirestoreError(error, 'delete', `graphics/${id}`);
-    }
+  const handleDeleteGraphic = (id: string) => {
+    setGraphics(prev => prev.filter(g => g.id !== id));
   };
 
   if (loading) {
@@ -99,7 +54,8 @@ export default function App() {
 
   const renderView = () => {
     if (view === 'home') return <Home graphics={graphics} onNavigate={(v: any) => setView(v)} onDesignSelect={setSelectedDesignId} />;
-    if (view === 'admin') return <Admin user={user} graphics={graphics} onAdd={handleAddGraphic} onDelete={handleDeleteGraphic} />;
+    // Admin is now just a local session manager, no auth for this version
+    if (view === 'admin') return <Admin user={null} graphics={graphics} onAdd={handleAddGraphic} onDelete={handleDeleteGraphic} />;
     if (view === 'archive') return <Category title="Archive" graphics={graphics} onDesignSelect={setSelectedDesignId} />;
     if (view === 'manuals') return <Manuals />;
     
@@ -112,16 +68,15 @@ export default function App() {
   return (
     <div className="min-h-screen bg-grihon-bg">
       <Navbar 
-        user={user}
-        onLogin={handleLogin}
-        onLogout={handleLogout}
+        onHomeClick={() => setView('home')} 
         onAdminClick={() => setView('admin')}
-        onHomeClick={() => { setView('home'); setSelectedDesignId(null); }}
-        onNavigate={(v: any) => { setView(v); setSelectedDesignId(null); }}
-        activeView={view}
+        onNavigate={(v: any) => setView(v)} 
+        currentView={view} 
       />
       
-      {renderView()}
+      <main>
+        {renderView()}
+      </main>
 
       <ProductModal 
         graphic={selectedGraphic} 
